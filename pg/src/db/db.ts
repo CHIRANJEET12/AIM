@@ -1,26 +1,26 @@
 import { Pool } from 'pg';
 
 export const pool = new Pool({
-  connectionString: 'postgresql://posttodo_owner:npg_peL6vhwA1iXa@ep-restless-sky-a4ty5fyg-pooler.us-east-1.aws.neon.tech/posttodo?sslmode=require',
-  ssl: {
-    rejectUnauthorized: false
-  }
+  user: 'postgres',             // your PostgreSQL username
+  host: 'localhost',            // host, usually localhost for local DB
+  database: 'todo',         // your database name
+  password: 'rootpsql',    // your PostgreSQL password
+  port: 3000,                   // default PostgreSQL port
 });
 
 const createTableQuery = `
-  CREATE TABLE IF NOT EXISTS tasks (
-    id SERIAL PRIMARY KEY,
-    task_name VARCHAR(255) NOT NULL,
-    task_status VARCHAR(50) DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
+CREATE TABLE IF NOT EXISTS todo (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 `;
 
-// Create the table by executing the query
 pool.query(createTableQuery)
-  .then(res => {
+  .then(() => {
     console.log('Table created or already exists');
   })
   .catch(err => {
-    console.error('Error creating table', err.stack);
+    console.error('Error creating table:', err.stack);
   });
