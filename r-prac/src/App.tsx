@@ -62,11 +62,6 @@ function App() {
     }
   }
 
-
-
-
-
-
   return (
     <>
       <div className="App">
@@ -74,7 +69,7 @@ function App() {
           className="typeahead"
           type="text"
           onChange={e => handleChnage(e)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={e => handleKeyDown(e)}
           value={inputval}
           name="typehead"
           placeholder="Search..." />
