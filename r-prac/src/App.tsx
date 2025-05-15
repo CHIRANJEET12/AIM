@@ -3,7 +3,7 @@
 
 // function App() {
 
-//   interface filteredProducts {
+//   interface ProductItem {
 //     id: string;
 //     name: string;
 //     category: string;
@@ -19,7 +19,7 @@
 //   ];
 
 //   const [inputval, setInputval] = useState("");
-//   const [suggestions, setsuggestions] = useState<filteredProducts[]>([]);
+//   const [suggestions, setsuggestions] = useState<ProductItem[]>([]);
 //   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
 //   const debouseRef = useRef<number | null>(null);
@@ -74,6 +74,7 @@
 //           name="typehead"
 //           placeholder="Search..." />
 
+        //  bad practise
 //         {
 //           inputval && (
 //             <div className="typeahead-dropdown">
