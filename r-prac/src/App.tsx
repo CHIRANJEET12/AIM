@@ -74,7 +74,7 @@
 //           name="typehead"
 //           placeholder="Search..." />
 
-        //  bad practise
+//  bad practise
 //         {
 //           inputval && (
 //             <div className="typeahead-dropdown">
@@ -125,130 +125,235 @@
 
 
 
-import { useState, useEffect } from "react";
-import { PersonalInfo } from "./components/PersonalInfo";
-import { FinancialInfo } from "./components/FinancialInfo";
-import { AccountSecurity } from "./components/AccountSecurity";
-import { Finalsubmit } from "./components/Finalsubmit";
+// import { useState, useEffect } from "react";
+// import { PersonalInfo } from "./components/PersonalInfo";
+// import { FinancialInfo } from "./components/FinancialInfo";
+// import { AccountSecurity } from "./components/AccountSecurity";
+// import { Finalsubmit } from "./components/Finalsubmit";
 
-interface AppProps {
-  data?: any;
-  onChange?: (key: string, value: any) => void;
-  onError?: (key: string, value: string) => void;
-  error?: string;
-  onNext?: () => void;
-  onPrevious?: () => void;
-}
+// interface AppProps {
+//   data?: any;
+//   onChange?: (key: string, value: any) => void;
+//   onError?: (key: string, value: string) => void;
+//   error?: string;
+//   onNext?: () => void;
+//   onPrevious?: () => void;
+// }
 
-interface formtype {
-  name: string;
-  email: string;
-  phone: number;
-  password: string;
-  securityAnswer: string;
-  income: number;
-  employment: string;
-}
+// interface formtype {
+//   name: string;
+//   email: string;
+//   phone: number;
+//   password: string;
+//   securityAnswer: string;
+//   income: number;
+//   employment: string;
+// }
 
-const App: React.FC<AppProps> = () => {
-  const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState<formtype>(() => {
-    const saved = localStorage.getItem('formdata');
-    return saved ? JSON.parse(saved) : {
-      name: '',
-      email: '',
-      phone: 0,
-      password: '',
-      securityAnswer: '',
-      income: 0,
-      employment: ''
-    };
-  });
+// const App: React.FC<AppProps> = () => {
+//   const [step, setStep] = useState(0);
+//   const [formData, setFormData] = useState<formtype>(() => {
+//     const saved = localStorage.getItem('formdata');
+//     return saved ? JSON.parse(saved) : {
+//       name: '',
+//       email: '',
+//       phone: 0,
+//       password: '',
+//       securityAnswer: '',
+//       income: 0,
+//       employment: ''
+//     };
+//   });
 
+//   const [error, setError] = useState('');
+
+//   useEffect(() => {
+//     localStorage.setItem('formdata', JSON.stringify(formData));
+//   }, [formData]);
+
+//   const handleNext = () => {
+//     if (step < 3) {
+//       setStep(prev => prev + 1);
+//     }
+//   };
+
+//   const handlePrevious = () => {
+//     if (step > 0) {
+//       setStep(prev => prev - 1);
+//     }
+//   };
+
+//   const handleChange = (key: string, value: any) => {
+//     setFormData((prev: any) => ({ ...prev, [key]: value }));
+//   };
+
+//   const handleError = (key: string, value: string) => {
+//     console.log(value);
+//     setError(value);
+//   };
+
+//   const steps = [
+//     {
+//       id: 1,
+//       label: "Personal Info",
+//       component: <PersonalInfo
+//         data={formData}
+//         onChange={handleChange}
+//         onError={handleError}
+//         error={error}
+//         onNext={handleNext}
+//         onPrevious={handlePrevious}
+//       />
+//     },
+//     {
+//       id: 2,
+//       label: "Account Security",
+//       component: <AccountSecurity
+//         data={formData}
+//         onChange={handleChange}
+//         onError={handleError}
+//         error={error}
+//         onNext={handleNext}
+//         onPrevious={handlePrevious}
+//       />
+//     },
+//     {
+//       id: 3,
+//       label: "Financial Info",
+//       component: <FinancialInfo
+//         data={formData}
+//         onChange={handleChange}
+//         onError={handleError}
+//         error={error}
+//         onNext={handleNext}
+//         onPrevious={handlePrevious}
+//       />
+//     },
+//     {
+//       id: 4,
+//       label: "Review & Submit",
+//       component: <Finalsubmit
+//         data={formData}
+//         onChange={handleChange}
+//         onError={handleError}
+//         error={error}
+//         onNext={handleNext}
+//         onPrevious={handlePrevious}
+//       />
+//     }
+//   ];
+
+//   return (
+//     <div className="App">
+//       <h2>Step {step + 1} of {steps.length}</h2>
+//       {steps[step].component}
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import './App.css'
+
+function App() {
+
+  const [loading, setloading] = useState(false);
+  const [data, setData] = useState<any>([]);
+  const [allData, setallData] = useState<any>([]);
   const [error, setError] = useState('');
 
+  const [page, setPage] = useState(()=>{
+    const savedpage = localStorage.getItem('page');
+    return savedpage ? JSON.parse(savedpage) : 1;
+  });
+  const limit = 5;
+
+  // let reload = useRef<number>(0);
+
+  const fetchdata = useCallback(async (): Promise<void> => {
+    setloading(true);
+    setError('');
+    try {
+      const res = await fetch('https://fakestoreapi.com/products');  
+      if (!res.ok) {
+        setError('Failed to fetch data');
+        return;
+      }
+
+      const result = await res.json();
+      setallData(result);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setloading(false);
+    }
+  },[])
+
+  useEffect(()=>{
+    localStorage.setItem('page', JSON.stringify(page));
+  },[page])
+
   useEffect(() => {
-    localStorage.setItem('formdata', JSON.stringify(formData));
-  }, [formData]);
+    fetchdata();
+  }, []);
 
-  const handleNext = () => {
-    if (step < 3) {
-      setStep(prev => prev + 1);
+  useEffect(() => {
+    const s = (page - 1) * limit;
+    const e = page * limit;
+    setData(allData.slice(s, e));
+  }, [allData, page])
+
+  const max = Math.ceil(allData.length / limit);
+
+  const Prev = useCallback(() => {
+    if (page > 1){
+      setPage(page - 1);
+    } 
+  },[page])
+  const Next = useCallback(() => {
+    if (page < max) {
+      setPage(page + 1);
     }
-  };
-
-  const handlePrevious = () => {
-    if (step > 0) {
-      setStep(prev => prev - 1);
-    }
-  };
-
-  const handleChange = (key: string, value: any) => {
-    setFormData((prev: any) => ({ ...prev, [key]: value }));
-  };
-
-  const handleError = (key: string, value: string) => {
-    console.log(value);
-    setError(value);
-  };
-
-  const steps = [
-    {
-      id: 1,
-      label: "Personal Info",
-      component: <PersonalInfo
-        data={formData}
-        onChange={handleChange}
-        onError={handleError}
-        error={error}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-      />
-    },
-    {
-      id: 2,
-      label: "Account Security",
-      component: <AccountSecurity
-        data={formData}
-        onChange={handleChange}
-        onError={handleError}
-        error={error}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-      />
-    },
-    {
-      id: 3,
-      label: "Financial Info",
-      component: <FinancialInfo
-        data={formData}
-        onChange={handleChange}
-        onError={handleError}
-        error={error}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-      />
-    },
-    {
-      id: 4,
-      label: "Review & Submit",
-      component: <Finalsubmit
-        data={formData}
-        onChange={handleChange}
-        onError={handleError}
-        error={error}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-      />
-    }
-  ];
+  },[page,max])
 
   return (
     <div className="App">
-      <h2>Step {step + 1} of {steps.length}</h2>
-      {steps[step].component}
+      <div>
+        <h1>Welcome</h1>
+        <p>This is the content</p>
+        <button onClick={fetchdata}>fetch data</button>
+      </div>
+      {loading ? <p>Loading...</p> :
+        (
+          error ? (
+            <p>{error}</p>
+          ) : (
+            data.length > 0 && (
+              <div className="products-container">
+                {data.map((item: any) => (
+                  <div className="product-card" key={item.id}>
+                    <img src={item.image} alt={item.title} />
+                    <h2>{item.title}</h2>
+                    <p>{item.description}</p>
+                    <p><strong>Price:</strong> ${item.price}</p>
+                    <p><strong>Category:</strong> {item.category}</p>
+                    <p><strong>Rating:</strong> {item.rating.rate} ({item.rating.count} reviews)</p>
+                  </div>
+                ))}
+              </div>
+            )
+          )
+        )
+      }
+      <button onClick={Prev} >Previous</button>
+      <button onClick={Next}>Next</button>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
