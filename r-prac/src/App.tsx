@@ -257,103 +257,147 @@
 
 
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import './App.css'
+
+// function App() {
+
+//   const [loading, setloading] = useState(false);
+//   const [data, setData] = useState<any>([]);
+//   const [allData, setallData] = useState<any>([]);
+//   const [error, setError] = useState('');
+
+//   const [page, setPage] = useState(()=>{
+//     const savedpage = localStorage.getItem('page');
+//     return savedpage ? JSON.parse(savedpage) : 1;
+//   });
+//   const limit = 5;
+
+//   // let reload = useRef<number>(0);
+
+//   const fetchdata = useCallback(async (): Promise<void> => {
+//     setloading(true);
+//     setError('');
+//     try {
+//       const res = await fetch('https://fakestoreapi.com/products');  
+//       if (!res.ok) {
+//         setError('Failed to fetch data');
+//         return;
+//       }
+
+//       const result = await res.json();
+//       setallData(result);
+//     } catch (err: any) {
+//       setError(err.message);
+//     } finally {
+//       setloading(false);
+//     }
+//   },[])
+
+//   useEffect(()=>{
+//     localStorage.setItem('page', JSON.stringify(page));
+//   },[page])
+
+//   useEffect(() => {
+//     fetchdata();
+//   }, []);
+
+//   useEffect(() => {
+//     const s = (page - 1) * limit;
+//     const e = page * limit;
+//     setData(allData.slice(s, e));
+//   }, [allData, page])
+
+//   const max = Math.ceil(allData.length / limit);
+
+//   const Prev = useCallback(() => {
+//     if (page > 1){
+//       setPage(page - 1);
+//     } 
+//   },[page])
+//   const Next = useCallback(() => {
+//     if (page < max) {
+//       setPage(page + 1);
+//     }
+//   },[page,max])
+
+//   return (
+//     <div className="App">
+//       <div>
+//         <h1>Welcome</h1>
+//         <p>This is the content</p>
+//         <button onClick={fetchdata}>fetch data</button>
+//       </div>
+//       {loading ? <p>Loading...</p> :
+//         (
+//           error ? (
+//             <p>{error}</p>
+//           ) : (
+//             data.length > 0 && (
+//               <div className="products-container">
+//                 {data.map((item: any) => (
+//                   <div className="product-card" key={item.id}>
+//                     <img src={item.image} alt={item.title} />
+//                     <h2>{item.title}</h2>
+//                     <p>{item.description}</p>
+//                     <p><strong>Price:</strong> ${item.price}</p>
+//                     <p><strong>Category:</strong> {item.category}</p>
+//                     <p><strong>Rating:</strong> {item.rating.rate} ({item.rating.count} reviews)</p>
+//                   </div>
+//                 ))}
+//               </div>
+//             )
+//           )
+//         )
+//       }
+//       <button onClick={Prev} >Previous</button>
+//       <button onClick={Next}>Next</button>
+//     </div>
+//   )
+// }
+
+// export default App
+
+
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import './App.css'
+
 
 function App() {
 
-  const [loading, setloading] = useState(false);
-  const [data, setData] = useState<any>([]);
-  const [allData, setallData] = useState<any>([]);
-  const [error, setError] = useState('');
+  //Each clicked button is saved in a list (clickedButtons)
+  const clickedButtons = useRef<HTMLButtonElement[]>([]);
 
-  const [page, setPage] = useState(()=>{
-    const savedpage = localStorage.getItem('page');
-    return savedpage ? JSON.parse(savedpage) : 1;
-  });
-  const limit = 5;
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.currentTarget;
+    const val = target.textContent;
+    target.style.backgroundColor = 'green';
 
-  // let reload = useRef<number>(0);
-
-  const fetchdata = useCallback(async (): Promise<void> => {
-    setloading(true);
-    setError('');
-    try {
-      const res = await fetch('https://fakestoreapi.com/products');  
-      if (!res.ok) {
-        setError('Failed to fetch data');
-        return;
-      }
-
-      const result = await res.json();
-      setallData(result);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setloading(false);
+    //handels duplicate issue
+    if (!clickedButtons.current.includes(target)) {
+      clickedButtons.current.push(target);
     }
-  },[])
 
-  useEffect(()=>{
-    localStorage.setItem('page', JSON.stringify(page));
-  },[page])
-
-  useEffect(() => {
-    fetchdata();
-  }, []);
-
-  useEffect(() => {
-    const s = (page - 1) * limit;
-    const e = page * limit;
-    setData(allData.slice(s, e));
-  }, [allData, page])
-
-  const max = Math.ceil(allData.length / limit);
-
-  const Prev = useCallback(() => {
-    if (page > 1){
-      setPage(page - 1);
-    } 
-  },[page])
-  const Next = useCallback(() => {
-    if (page < max) {
-      setPage(page + 1);
+    //whenever 9 is clicked
+    if (val === '9') {
+      clickedButtons.current.forEach((btn, e) => {
+        setTimeout(() => {
+          btn.style.backgroundColor = 'orange';
+        }, 100 * e)
+      })
+      clickedButtons.current = [];
     }
-  },[page,max])
+    console.log('clicked');
+  }
 
   return (
-    <div className="App">
-      <div>
-        <h1>Welcome</h1>
-        <p>This is the content</p>
-        <button onClick={fetchdata}>fetch data</button>
-      </div>
-      {loading ? <p>Loading...</p> :
-        (
-          error ? (
-            <p>{error}</p>
-          ) : (
-            data.length > 0 && (
-              <div className="products-container">
-                {data.map((item: any) => (
-                  <div className="product-card" key={item.id}>
-                    <img src={item.image} alt={item.title} />
-                    <h2>{item.title}</h2>
-                    <p>{item.description}</p>
-                    <p><strong>Price:</strong> ${item.price}</p>
-                    <p><strong>Category:</strong> {item.category}</p>
-                    <p><strong>Rating:</strong> {item.rating.rate} ({item.rating.count} reviews)</p>
-                  </div>
-                ))}
-              </div>
-            )
-          )
-        )
-      }
-      <button onClick={Prev} >Previous</button>
-      <button onClick={Next}>Next</button>
+    <div className="grid">
+      {Array.from({ length: 9 }).map((_, index) => (
+        <button onClick={handleClick} style={{ backgroundColor: 'orange' }} className="cell" key={index}>{index + 1}</button>
+      ))}
     </div>
   )
 }
 
-export default App
+
+export default App;

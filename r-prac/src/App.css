@@ -56,7 +56,7 @@
   text-align: center;
 } */
 
-
+/* 
 
 
 .App {
@@ -123,4 +123,23 @@ button:hover {
   margin: 0.25rem 0;
   font-size: 0.9rem;
   color: #555;
+} */
+
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.cell {
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
