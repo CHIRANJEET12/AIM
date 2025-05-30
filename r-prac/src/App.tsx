@@ -1,403 +1,159 @@
-// import { useState, useEffect, useRef } from "react";
-// import "./App.css";
+import { useState, useEffect, useRef } from "react";
 
-// function App() {
+interface format {
+  actualWord: string;
+}
 
-//   interface ProductItem {
-//     id: string;
-//     name: string;
-//     category: string;
-//   }
+export default function App() {
+  const words = [
+    "apple",
+    "grape",
+    "flame",
+    "plant",
+    "crane",
+    "spark",
+    "glide",
+    "stone",
+    "brick",
+    "pride",
+    "shine",
+    "blaze",
+    "frost",
+    "dream",
+    "quiet",
+    "round",
+    "trace",
+    "lunch",
+    "swirl",
+    "eagle"
+  ];
 
+  const [word, setWord] = useState("");
 
-//   const allProducts = [
-//     { id: "1", name: "iPhone 14", category: "Electronics" },
-//     { id: "2", name: "Samsung Galaxy", category: "Electronics" },
-//     { id: "3", name: "Nike Running Shoes", category: "Footwear" },
-//     { id: "4", name: "Adidas Sneakers", category: "Footwear" },
-//     { id: "5", name: "Sony Headphones", category: "Electronics" },
-//   ];
-
-//   const [inputval, setInputval] = useState("");
-//   const [suggestions, setsuggestions] = useState<ProductItem[]>([]);
-//   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
-//   const debouseRef = useRef<number | null>(null);
-
-//   const handleChnage = (e: any) => {
-//     setHighlightedIndex(-1);
-//     setInputval(e.target.value);
-
-//     if (debouseRef.current) {
-//       clearTimeout(debouseRef.current);
-//     }
-
-//     debouseRef.current = setTimeout(() => {
-//       const filteredProducts = allProducts.filter((Products) => {
-//         return Products.name.toLowerCase().includes(e.target.value.toLowerCase());
-//       });
-//       setsuggestions(filteredProducts);
-//     }, 600);
-//   }
-
-//   const handelClick = (name: string) => {
-//     setInputval(name);
-//     setsuggestions([]);
-//   }
-
-//   const handleKeyDown = (e: any) => {
-//     if (e.key == "ArrowDown") {
-//       setHighlightedIndex((prev) => Math.min(prev + 1, suggestions.length - 1))
-//     } else if (e.key == "ArrowUp") {
-//       setHighlightedIndex((prev) => Math.max(prev - 1, 0))
-//     } else if (e.key === "Enter") {
-//       if (highlightedIndex >= 0 && suggestions.length > 0) {
-//         handelClick(suggestions[highlightedIndex].name);
-//       } else if (inputval.trim()) {
-//         console.log("Custom search:", inputval);
-//       }
-//       setsuggestions([]);
-//     } else if (e.key == "Escape") {
-//       setsuggestions([]);
-//     }
-//   }
-
-//   return (
-//     <>
-//       <div className="App">
-//         <input
-//           className="typeahead"
-//           type="text"
-//           onChange={e => handleChnage(e)}
-//           onKeyDown={e => handleKeyDown(e)}
-//           value={inputval}
-//           name="typehead"
-//           placeholder="Search..." />
-
-//  bad practise
-//         {
-//           inputval && (
-//             <div className="typeahead-dropdown">
-//               <p>{inputval}</p>
-//               {inputval && !suggestions.length && (
-//                 <div className="typeahead-no-results">No results found</div>
-//               )}
-
-//               {/*using select -- not good practise*/}
-//               {/* <select name="typeahead-select" id="typehead-id">
-//             {
-//               inputval && suggestions.map((suggestions) => {
-//                 return (
-//                   <option value={suggestions.name} key={suggestions.id}>
-//                     {suggestions.name}
-//                   </option>
-//                 )
-//               })
-//             }
-//           </select> */}
-
-
-//               {/* instead use a list*/}
-//               <ul className="suggestions-list">
-//                 {inputval &&
-//                   suggestions.map((suggestion, idx) => (
-//                     <li
-//                       key={idx}
-//                       onClick={() => handelClick(suggestion.name)}
-//                       className={highlightedIndex === idx ? "highlighted" : ""}
-//                     >
-//                       {suggestion.name}
-//                     </li>
-//                   ))}
-//               </ul>
-
-//             </div>
-//           )
-//         }
-//       </div>
-
-//     </>
-//   );
-// }
-
-// export default App;
-
-
-
-
-// import { useState, useEffect } from "react";
-// import { PersonalInfo } from "./components/PersonalInfo";
-// import { FinancialInfo } from "./components/FinancialInfo";
-// import { AccountSecurity } from "./components/AccountSecurity";
-// import { Finalsubmit } from "./components/Finalsubmit";
-
-// interface AppProps {
-//   data?: any;
-//   onChange?: (key: string, value: any) => void;
-//   onError?: (key: string, value: string) => void;
-//   error?: string;
-//   onNext?: () => void;
-//   onPrevious?: () => void;
-// }
-
-// interface formtype {
-//   name: string;
-//   email: string;
-//   phone: number;
-//   password: string;
-//   securityAnswer: string;
-//   income: number;
-//   employment: string;
-// }
-
-// const App: React.FC<AppProps> = () => {
-//   const [step, setStep] = useState(0);
-//   const [formData, setFormData] = useState<formtype>(() => {
-//     const saved = localStorage.getItem('formdata');
-//     return saved ? JSON.parse(saved) : {
-//       name: '',
-//       email: '',
-//       phone: 0,
-//       password: '',
-//       securityAnswer: '',
-//       income: 0,
-//       employment: ''
-//     };
-//   });
-
-//   const [error, setError] = useState('');
-
-//   useEffect(() => {
-//     localStorage.setItem('formdata', JSON.stringify(formData));
-//   }, [formData]);
-
-//   const handleNext = () => {
-//     if (step < 3) {
-//       setStep(prev => prev + 1);
-//     }
-//   };
-
-//   const handlePrevious = () => {
-//     if (step > 0) {
-//       setStep(prev => prev - 1);
-//     }
-//   };
-
-//   const handleChange = (key: string, value: any) => {
-//     setFormData((prev: any) => ({ ...prev, [key]: value }));
-//   };
-
-//   const handleError = (key: string, value: string) => {
-//     console.log(value);
-//     setError(value);
-//   };
-
-//   const steps = [
-//     {
-//       id: 1,
-//       label: "Personal Info",
-//       component: <PersonalInfo
-//         data={formData}
-//         onChange={handleChange}
-//         onError={handleError}
-//         error={error}
-//         onNext={handleNext}
-//         onPrevious={handlePrevious}
-//       />
-//     },
-//     {
-//       id: 2,
-//       label: "Account Security",
-//       component: <AccountSecurity
-//         data={formData}
-//         onChange={handleChange}
-//         onError={handleError}
-//         error={error}
-//         onNext={handleNext}
-//         onPrevious={handlePrevious}
-//       />
-//     },
-//     {
-//       id: 3,
-//       label: "Financial Info",
-//       component: <FinancialInfo
-//         data={formData}
-//         onChange={handleChange}
-//         onError={handleError}
-//         error={error}
-//         onNext={handleNext}
-//         onPrevious={handlePrevious}
-//       />
-//     },
-//     {
-//       id: 4,
-//       label: "Review & Submit",
-//       component: <Finalsubmit
-//         data={formData}
-//         onChange={handleChange}
-//         onError={handleError}
-//         error={error}
-//         onNext={handleNext}
-//         onPrevious={handlePrevious}
-//       />
-//     }
-//   ];
-
-//   return (
-//     <div className="App">
-//       <h2>Step {step + 1} of {steps.length}</h2>
-//       {steps[step].component}
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-
-
-
-// import React, { useState, useEffect, useRef, useCallback } from 'react';
-// import './App.css'
-
-// function App() {
-
-//   const [loading, setloading] = useState(false);
-//   const [data, setData] = useState<any>([]);
-//   const [allData, setallData] = useState<any>([]);
-//   const [error, setError] = useState('');
-
-//   const [page, setPage] = useState(()=>{
-//     const savedpage = localStorage.getItem('page');
-//     return savedpage ? JSON.parse(savedpage) : 1;
-//   });
-//   const limit = 5;
-
-//   // let reload = useRef<number>(0);
-
-//   const fetchdata = useCallback(async (): Promise<void> => {
-//     setloading(true);
-//     setError('');
-//     try {
-//       const res = await fetch('https://fakestoreapi.com/products');  
-//       if (!res.ok) {
-//         setError('Failed to fetch data');
-//         return;
-//       }
-
-//       const result = await res.json();
-//       setallData(result);
-//     } catch (err: any) {
-//       setError(err.message);
-//     } finally {
-//       setloading(false);
-//     }
-//   },[])
-
-//   useEffect(()=>{
-//     localStorage.setItem('page', JSON.stringify(page));
-//   },[page])
-
-//   useEffect(() => {
-//     fetchdata();
-//   }, []);
-
-//   useEffect(() => {
-//     const s = (page - 1) * limit;
-//     const e = page * limit;
-//     setData(allData.slice(s, e));
-//   }, [allData, page])
-
-//   const max = Math.ceil(allData.length / limit);
-
-//   const Prev = useCallback(() => {
-//     if (page > 1){
-//       setPage(page - 1);
-//     } 
-//   },[page])
-//   const Next = useCallback(() => {
-//     if (page < max) {
-//       setPage(page + 1);
-//     }
-//   },[page,max])
-
-//   return (
-//     <div className="App">
-//       <div>
-//         <h1>Welcome</h1>
-//         <p>This is the content</p>
-//         <button onClick={fetchdata}>fetch data</button>
-//       </div>
-//       {loading ? <p>Loading...</p> :
-//         (
-//           error ? (
-//             <p>{error}</p>
-//           ) : (
-//             data.length > 0 && (
-//               <div className="products-container">
-//                 {data.map((item: any) => (
-//                   <div className="product-card" key={item.id}>
-//                     <img src={item.image} alt={item.title} />
-//                     <h2>{item.title}</h2>
-//                     <p>{item.description}</p>
-//                     <p><strong>Price:</strong> ${item.price}</p>
-//                     <p><strong>Category:</strong> {item.category}</p>
-//                     <p><strong>Rating:</strong> {item.rating.rate} ({item.rating.count} reviews)</p>
-//                   </div>
-//                 ))}
-//               </div>
-//             )
-//           )
-//         )
-//       }
-//       <button onClick={Prev} >Previous</button>
-//       <button onClick={Next}>Next</button>
-//     </div>
-//   )
-// }
-
-// export default App
-
-
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import './App.css'
-
-
-function App() {
-
-  //Each clicked button is saved in a list (clickedButtons)
-  const clickedButtons = useRef<HTMLButtonElement[]>([]);
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget;
-    const val = target.textContent;
-    target.style.backgroundColor = 'green';
-
-    //handels duplicate issue
-    if (!clickedButtons.current.includes(target)) {
-      clickedButtons.current.push(target);
+  useEffect(() => {
+    async function fetchWords() {
+      try {
+        const randomWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
+        setWord(randomWord);
+      } catch (e) {
+        console.log("Fetch error", e);
+      }
     }
-
-    //whenever 9 is clicked
-    if (val === '9') {
-      clickedButtons.current.forEach((btn, e) => {
-        setTimeout(() => {
-          btn.style.backgroundColor = 'orange';
-        }, 100 * e)
-      })
-      clickedButtons.current = [];
-    }
-    console.log('clicked');
-  }
+    fetchWords();
+  }, [])
 
   return (
-    <div className="grid">
-      {Array.from({ length: 9 }).map((_, index) => (
-        <button onClick={handleClick} style={{ backgroundColor: 'orange' }} className="cell" key={index}>{index + 1}</button>
-      ))}
+    <div className="app-main min-h-screen bg-white flex flex-col items-center justify-start">
+      <h1 className="text-4xl font-bold text-center text-black tracking-widest my-6">WORDLE</h1>
+      {/* <h4>Assigned word: {word}</h4> */}
+      <Grid actualWord={word} />
     </div>
   )
 }
 
+function Grid({ actualWord }: format) {
+  const rows = 6;
+  const cols = 5;
 
-export default App;
+  const [grid, setGrid] = useState(Array(rows).fill("").map(() => Array(cols).fill("")));
+  const [currRow, setCurrRow] = useState(0);
+  const [currCol, setCurrCol] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  
+  const colorRef = useRef(Array(rows).fill("").map(() => Array(cols).fill("")));
+
+  useEffect(() => {
+    const handleSubmit = (e: KeyboardEvent) => {
+      if (gameOver || currRow >= rows) return;
+
+      const newGrid = [...grid];
+      newGrid[currRow] = [...grid[currRow]];
+      
+      if (e.key === 'Backspace') {
+        if (currCol > 0) {
+          newGrid[currRow][currCol - 1] = "";
+          setCurrCol(currCol - 1);
+        }
+      } else if (/^[a-zA-Z]$/.test(e.key)) {
+        if (currCol < cols) {
+          newGrid[currRow][currCol] = e.key.toUpperCase();
+          setCurrCol(currCol + 1);
+        }
+      } else if (e.key === 'Enter' && currCol === cols) {
+        const guess = newGrid[currRow].join("");
+        const newColor = Array(cols).fill("");
+        const wordArr = actualWord.split("");
+        const guessArr = guess.split("");
+        
+        // First pass: check correct letters (green)
+        guessArr.forEach((ch, i) => {
+          if (ch === wordArr[i]) {
+            newColor[i] = "green";
+            wordArr[i] = "";
+            guessArr[i] = "";
+          }
+        });
+
+        // Second pass: check present but wrong position (yellow)
+        guessArr.forEach((ch, i) => {
+          if (ch && wordArr.includes(ch)) {
+            newColor[i] = "yellow";
+            wordArr[wordArr.indexOf(ch)] = "";
+          } else if (ch) {
+            newColor[i] = "gray";
+          }
+        });
+
+        colorRef.current[currRow] = newColor;
+
+        if (guess === actualWord) {
+          setTimeout(() => alert("Congratulations! You guessed the word!"), 100);
+          setGameOver(true);
+        } else if (currRow === rows - 1) {
+          setTimeout(() => alert(`Game Over! The word was ${actualWord}`), 100);
+          setGameOver(true);
+        } else {
+          setCurrRow(currRow + 1);
+          setCurrCol(0);
+        }
+      }
+
+      setGrid(newGrid);
+    };
+
+    window.addEventListener("keydown", handleSubmit);
+    return () => window.removeEventListener('keydown', handleSubmit);
+  }, [grid, currCol, currRow, actualWord, gameOver]);
+
+  const colorClass = (color: string) => {
+    switch (color) {
+      case "green":
+        return "bg-green-500 text-white";
+      case "yellow":
+        return "bg-yellow-400 text-white";
+      case "gray":
+        return "bg-gray-400 text-white";
+      default:
+        return "bg-white text-black";
+    }
+  }
+
+  return (
+    <div className="grid p-4 rounded-md space-y-2 flex items-center justify-center">
+      {grid.map((row, rind) => (
+        <div className="grid-row flex space-x-2" key={rind}>
+          {row.map((char, cind) => (
+            <div
+              key={cind}
+              className={`w-14 h-14 border-2 border-black flex items-center justify-center text-2xl font-bold rounded-sm uppercase ${colorClass(
+                colorRef.current[rind][cind]
+              )}`}
+            >
+              {char}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
